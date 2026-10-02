@@ -378,3 +378,251 @@ The evidence-grounded prompt further improved factual consistency by requiring p
 The final structured prompt converted those findings into a concise format suitable for market research reporting.
 
 Overall, Scenario 2 demonstrates that increasingly specific instructions, grounding constraints, and output formatting can improve both the precision and usability of model-generated market research insights.
+
+# Scenario 3: Category Comparison
+
+## Comparison Samples
+
+Scenario 3 compares one sampled Top review with one sampled Dress review.
+
+These reviews are used as examples for prompt engineering only. The model is not instructed to generalize the findings to all products in either category.
+
+### Top Review
+
+**Department:** Tops  
+**Class:** Blouses  
+**Rating:** 5/5  
+**Recommended:** Yes  
+
+This shirt is very flattering to all due to the adjustable front tie. it is the perfect length to wear with leggings and it is sleeveless so it pairs well with any cardigan. love this shirt!!!
+
+### Dress Review
+
+**Department:** Dresses  
+**Class:** Dresses  
+**Rating:** 2/5  
+**Recommended:** No  
+
+I love tracy reese dresses, but this one is not for the very petite. i am just under 5 feet tall and usually wear a 0p in this brand. this dress was very pretty out of the package but its a lot of dress. the skirt is long and very full so it overwhelmed my small frame. not a stranger to alterations, shortening and narrowing the skirt would take away from the embellishment of the garment. i love the color and the idea of the style but it just did not work on me. i returned this dress.
+
+---
+
+## Prompt 1: Broad Baseline
+
+### Prompt
+
+Compare these two customer reviews.
+
+### Prompting Technique
+
+This baseline provides two reviews and asks for a comparison without specifying which aspects should be compared or how the answer should be structured.
+
+### Model Output
+
+> The Top Review:
+> - The shirt has an adjustable front tie that makes it flattering.
+> - It's suitable for both leggings and cardigans.
+> - The reviewer loves the shirt overall.
+>
+> The Dress Review:
+> - Tracy Reese dresses are known for their versatility.
+> - The reviewer is slightly under 5'6" and wears a 0P.
+> - The dress is described as "very pretty out of the package."
+> - The skirt is described as "long and very full."
+> - The reviewer mentions alterations, shortening, and narrowing the skirt.
+> - They state they don't like how the skirt takes away from the embellishments.
+> - They return the dress because they didn't like it fitting them properly.
+>
+> Overall, the top review highlights the flattering features of the shirt and positive experience with the dress, while the bottom review expresses dissatisfaction with the fit and design.
+
+### Observation
+
+The broad comparison identified several important differences, but it also introduced errors.
+
+The model correctly recognized the positive experience in the Top review and the fit problems in the Dress review. However, it misread the customer's height and introduced unsupported claims about the Tracy Reese brand.
+
+The loose prompt also allowed the response to become inconsistent in how the two reviews were described.
+
+---
+
+## Prompt 2: Explicit Comparison
+
+### Prompt
+
+Compare the Top review with the Dress review.
+
+Identify the main positive point in each review and explain the biggest difference in the customers' experiences.
+
+Use only information from the reviews.
+
+### Prompting Technique
+
+This variation defines the comparison criteria and adds a grounding instruction.
+
+Instead of asking for a general comparison, it directs the model to identify a positive point for each product and then summarize the main difference between the customer experiences.
+
+### Model Output
+
+> **Top Review:**
+> - **Main Positive Point:** The adjustable front tie allows for a flattering fit.
+> - **Biggest Difference:** The customer's experience was significantly impacted by the dress being too large for their size, which caused them to feel unflattering and uncomfortable.
+>
+> **Dress Review:**
+> - **Main Positive Point:** The dress is beautiful and has a unique design that stands out.
+> - **Biggest Difference:** The customer found the dress to be overly large for their body type, resulting in an overall unsatisfactory experience. They felt like they were wearing a "package" rather than a piece of clothing, leading to disappointment and dissatisfaction.
+
+### Observation
+
+The explicit comparison improved focus by identifying a positive point from each review and emphasizing the difference in customer experience.
+
+The model correctly identified the adjustable front tie as a positive feature of the Top and recognized that sizing was the primary problem with the Dress.
+
+However, it still introduced unsupported language, including describing the dress design as unique and claiming that the customer felt like they were wearing a package.
+
+The prompt improved task focus, but factual grounding still needed stronger constraints.
+
+---
+
+## Prompt 3: Market Research Comparison
+
+### Prompt
+
+You are a market research analyst comparing two sampled customer reviews from different product categories.
+
+For the Top review:
+
+- identify the main positive product attribute
+- identify whether the customer experience is positive, mixed, or negative
+
+For the Dress review:
+
+- identify the main positive product attribute
+- identify whether the customer experience is positive, mixed, or negative
+- identify the main concern
+
+Then describe the clearest difference between the two customer experiences.
+
+Use only information in the reviews.  
+Do not generalize these findings to all Tops or all Dresses.
+
+### Prompting Technique
+
+This variation adds a market research role, separates the analysis by product, and introduces explicit limits on generalization.
+
+The prompt also defines which information should be extracted from each review.
+
+### Model Output
+
+> **Top Review:**
+> - **Main Positive Product Attribute:** The adjustable front tie
+> - **Customer Experience:** Positive
+> - **Concerns:** Mixed (The dress is too large for the reviewer's height)
+>
+> **Dress Review:**
+> - **Main Positive Product Attribute:** The Tracy Reese dress
+> - **Customer Experience:** Negative
+> - **Concerns:** Mixed (The dress does not fit properly for the reviewer's height)
+> - **Reasoning:** The dress is described as "very pretty out of the package" but lacks the desired features like adjustable front ties, which are crucial for comfort and fitting. Additionally, the overall design and fit do not meet the reviewer's expectations regarding their body size.
+
+### Observation
+
+The market research framing improved the response by correctly classifying the Top experience as positive and the Dress experience as negative.
+
+The model also correctly identified the adjustable front tie as the Top's strongest positive attribute and fit as the major concern in the Dress review.
+
+However, some information from the two reviews was still mixed together. For example, the response incorrectly applied the Dress sizing issue to the Top review and suggested that the Dress lacked an adjustable front tie.
+
+This showed that additional constraints were needed to keep information from the two sources separate.
+
+---
+
+## Prompt 4: Constrained Category Comparison
+
+### Prompt
+
+You are a market research analyst comparing two sampled customer reviews.
+
+Analyze each review separately before comparing them.
+
+For the experience fields, you MUST use exactly one of these three labels:
+
+positive  
+mixed  
+negative  
+
+For the strength fields, identify something the customer explicitly liked about that specific product.
+
+For the concern field, identify something the customer explicitly disliked or found problematic.
+
+Important rules:
+
+- Do not mix information between the two reviews.
+- Do not use general opinions about a brand.
+- Do not invent information.
+- Do not treat a complaint as a strength.
+- Do not make claims about all Tops or all Dresses.
+- Complete all six fields.
+
+Return exactly six lines in this format:
+
+Top experience: [positive, mixed, or negative]  
+Top strength: [positive attribute from the Top review]  
+Dress experience: [positive, mixed, or negative]  
+Dress strength: [positive attribute from the Dress review]  
+Dress concern: [negative issue from the Dress review]  
+Key difference: [difference between the two customers' overall experiences]
+
+### Prompting Technique
+
+This final variation adds strict separation between the two source reviews, controlled classification labels, explicit anti-hallucination constraints, and a fixed output structure.
+
+The goal is to prevent information from one review from being incorrectly transferred to the other while producing a concise category-comparison summary.
+
+### Model Output
+
+> Top experience: positive  
+> Top strength: adjustable front tie  
+> Dress experience: negative  
+> Dress strength: very pretty out of the package  
+> Dress concern: too long and full skirt  
+> Key difference: struggled with alterations, shortening, and changing skirt size
+
+### Observation
+
+The constrained prompt produced the most controlled response in Scenario 3.
+
+The model correctly classified the Top customer experience as positive and identified the adjustable front tie as the main positive attribute.
+
+For the Dress review, it correctly classified the experience as negative, identified the appearance of the dress as a positive attribute, and identified the long, full skirt as the main concern.
+
+Most importantly, the response kept the two reviews separate and did not transfer product details from one review to the other.
+
+The Key difference field was somewhat awkwardly phrased, but it remained grounded in the Dress review rather than introducing unsupported information.
+
+---
+
+## Scenario 3 Comparison
+
+Scenario 3 demonstrates the importance of prompt structure when comparing multiple sources.
+
+The broad baseline identified useful differences between the reviews but also introduced unsupported claims and interpretation errors.
+
+The explicit comparison improved task focus but still allowed the model to add information that was not present in the source reviews.
+
+The market research prompt improved classification and analytical framing, but the model still mixed details between the two products.
+
+The final constrained prompt produced the strongest result by requiring the model to analyze each review separately, limiting the allowed classification labels, preventing unsupported generalization, and enforcing a fixed output structure.
+
+Overall, the scenario shows that source separation and explicit grounding constraints are especially important when a prompt asks a model to compare multiple pieces of market research data.
+
+# Prompt Engineering Conclusion
+
+Across all three scenarios, the results show that prompt design had a clear effect on the usefulness of model responses.
+
+Broad prompts often produced relevant information, but they also gave the model enough freedom to introduce inaccurate interpretations or unsupported details.
+
+Adding explicit task requirements improved focus. Role-based prompting helped orient the model toward market research analysis, while grounding constraints reduced unsupported interpretations.
+
+The strongest results generally came from prompts that combined a clearly defined task with explicit source limitations and a structured output format.
+
+The experiments demonstrate that prompt engineering does not change the model's parameters. Instead, it changes how the model is instructed during inference. More precise prompts improved the relevance, factual grounding, format adherence, and practical usability of the generated market research insights.

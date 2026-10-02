@@ -11,6 +11,14 @@ SCENARIO_2_REVIEW = """
 I love tracy reese dresses, but this one is not for the very petite. i am just under 5 feet tall and usually wear a 0p in this brand. this dress was very pretty out of the package but its a lot of dress. the skirt is long and very full so it overwhelmed my small frame. not a stranger to alterations, shortening and narrowing the skirt would take away from the embellishment of the garment. i love the color and the idea of the style but it just did not work on me. i returned this dress.
 """.strip()
 
+SCENARIO_3_TOP_REVIEW = """
+This shirt is very flattering to all due to the adjustable front tie. it is the perfect length to wear with leggings and it is sleeveless so it pairs well with any cardigan. love this shirt!!!
+""".strip()
+
+SCENARIO_3_DRESS_REVIEW = """
+I love tracy reese dresses, but this one is not for the very petite. i am just under 5 feet tall and usually wear a 0p in this brand. this dress was very pretty out of the package but its a lot of dress. the skirt is long and very full so it overwhelmed my small frame. not a stranger to alterations, shortening and narrowing the skirt would take away from the embellishment of the garment. i love the color and the idea of the style but it just did not work on me. i returned this dress.
+""".strip()
+
 PROMPTS = {
     "Scenario 1 - Prompt 1 - Broad Baseline": f"""
 Is the customer satisfied with this product?
@@ -116,6 +124,92 @@ Customer action: [what the customer did]
 Customer review:
 {SCENARIO_2_REVIEW}
 """.strip(),
+
+    "Scenario 3 - Prompt 1 - Broad Baseline": f"""
+Compare these two customer reviews.
+
+Top review:
+{SCENARIO_3_TOP_REVIEW}
+
+Dress review:
+{SCENARIO_3_DRESS_REVIEW}
+""".strip(),
+
+    "Scenario 3 - Prompt 2 - Explicit Comparison": f"""
+Compare the Top review with the Dress review.
+
+Identify the main positive point in each review and explain the biggest difference in the customers' experiences.
+
+Use only information from the reviews.
+
+Top review:
+{SCENARIO_3_TOP_REVIEW}
+
+Dress review:
+{SCENARIO_3_DRESS_REVIEW}
+""".strip(),
+
+    "Scenario 3 - Prompt 3 - Market Research Comparison": f"""
+You are a market research analyst comparing two sampled customer reviews from different product categories.
+
+For the Top review:
+- identify the main positive product attribute
+- identify whether the customer experience is positive, mixed, or negative
+
+For the Dress review:
+- identify the main positive product attribute
+- identify whether the customer experience is positive, mixed, or negative
+- identify the main concern
+
+Then describe the clearest difference between the two customer experiences.
+
+Use only information in the reviews.
+Do not generalize these findings to all Tops or all Dresses.
+
+Top review:
+{SCENARIO_3_TOP_REVIEW}
+
+Dress review:
+{SCENARIO_3_DRESS_REVIEW}
+""".strip(),
+
+    "Scenario 3 - Prompt 4 - Constrained Category Comparison": f"""
+You are a market research analyst comparing two sampled customer reviews.
+
+Analyze each review separately before comparing them.
+
+For the experience fields, you MUST use exactly one of these three labels:
+positive
+mixed
+negative
+
+For the strength fields, identify something the customer explicitly liked about that specific product.
+
+For the concern field, identify something the customer explicitly disliked or found problematic.
+
+Important rules:
+- Do not mix information between the two reviews.
+- Do not use general opinions about a brand.
+- Do not invent information.
+- Do not treat a complaint as a strength.
+- Do not make claims about all Tops or all Dresses.
+- Complete all six fields.
+
+Return exactly six lines in this format:
+
+Top experience: [positive, mixed, or negative]
+Top strength: [positive attribute from the Top review]
+Dress experience: [positive, mixed, or negative]
+Dress strength: [positive attribute from the Dress review]
+Dress concern: [negative issue from the Dress review]
+Key difference: [difference between the two customers' overall experiences]
+
+Top review:
+{SCENARIO_3_TOP_REVIEW}
+
+Dress review:
+{SCENARIO_3_DRESS_REVIEW}
+""".strip(),
 }
 
 
@@ -138,7 +232,7 @@ def generate_response(tokenizer, model, instruction):
     with torch.inference_mode():
         outputs = model.generate(
             **inputs,
-            max_new_tokens=180,
+            max_new_tokens=220,
             do_sample=False,
         )
 
