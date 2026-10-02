@@ -8,3 +8,13 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Large generated model artifacts
+models/**/*.safetensors
+models/**/optimizer.pt
+models/**/scheduler.pt
+models/**/rng_state.pth
+models/**/checkpoint-*/
+
+# macOS
+.DS_Store

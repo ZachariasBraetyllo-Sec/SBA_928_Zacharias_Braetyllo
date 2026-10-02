@@ -1,0 +1,39 @@
+SBA 928 Fine-Tuning Training Summary
+
+Model:
+google/flan-t5-small
+
+Training examples:
+24
+
+Validation examples:
+3
+
+Training configuration:
+Epochs: 5
+Training batch size: 2
+Validation batch size: 2
+Learning rate: 5e-5
+Weight decay: 0.01
+Random seed: 42
+
+Validation loss by epoch:
+Epoch 1: 1.6330
+Epoch 2: 1.0080
+Epoch 3: 0.8447
+Epoch 4: 0.7750
+Epoch 5: 0.7595
+
+Final training metrics:
+Training runtime: 26.27 seconds
+Training loss: 1.5134
+Epochs completed: 5
+
+Saved local checkpoint:
+models/flan_t5_market_research
+
+Note:
+Large model-weight and optimizer files are excluded from the Git repository
+because they exceed standard GitHub file-size limits. Training code, model
+configuration, tokenizer metadata, evaluation outputs, and training evidence
+are included so the experiment can be reviewed and reproduced.
