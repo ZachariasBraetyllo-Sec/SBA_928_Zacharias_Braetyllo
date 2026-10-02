@@ -7,7 +7,11 @@ authors = [
     { name = "Zacharias Braetyllo", email = "zbraetyllo@outlook.com" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "sentencepiece>=0.2.2",
+    "torch>=2.14.1",
+    "transformers>=5.18.0",
+]
 
 [project.scripts]
 sba-928-zacharias-braetyllo = "sba_928_zacharias_braetyllo:main"
